@@ -202,14 +202,13 @@ if total(playerhand) < 21:
     
     if action == "stand":
         time.sleep(1)
-        print("You will take no more card")
     
 #***************************************************
 #******REVEAL ET COMPLETE DE LA MAIN DU DEALER******
 #***************************************************
 time.sleep(2)
 
-print("\nThe hand ends. Revealing dealer's hand...\n")
+print("\nYou won't take another card. Revealing dealer's hand:\n")
 
 time.sleep(1)
 
@@ -231,33 +230,26 @@ print(f"       => total: {total(dealerhand)}\n")
 #****************GAINS DU JOUEUR********************
 #*****************hors blackjack********************
 #***************************************************
+time.sleep(2)
 
-#***perdu***
 if total(playerhand) > 21:
-    print("Your bet is lost")        
-
-#***soft blackjack et tie blackjack***
-if total(playerhand) == 21 and total(dealerhand) != 21:
-    time.sleep(1)
-    print("You win once your bet.\n")
-    wallet = wallet + 2*bet
-
-if total(dealerhand) == total(playerhand) == 21:
-    time.sleep(1)
-    print("TIE! Your bet is returned to you.\n")
-    wallet = wallet + bet
-    
-#***moins de 21***
-if total(playerhand) < 21:
+    print("Your bet is lost.")
+else:
     time.sleep(1)
     if total(dealerhand) <= 21:
         if total(dealerhand) > total(playerhand):
-            print("Dealer wins. Your bet is lost.\n")
-        elif total(dealerhand) == total(playerhand):
+            print("Your bet is lost.\n")
+        if total(dealerhand) == total(playerhand):
             print("PUSH! Your bet is returned to you.\n")
-        else:
-            print("Your hand's better than the dealer's. You win once your bet.\n")
+            wallet = wallet + bet
+        if total(playerhand) > total(dealerhand) :
+            print("You win once your bet.\n")
             wallet = wallet + bet*2
+    #elif total(dealerhand) > 21:
+    else:
+        print("You win once your bet.\n")
+        wallet = wallet + bet*2
+            
+time.sleep(1)
 
-time.sleep(1)             
 print(f"You have {wallet}$ left.")
