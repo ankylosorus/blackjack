@@ -6,7 +6,7 @@ import getpass
 
 import time
 
-deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King", "Ace"]
+deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King", "Ace", "Ace", "Ace", "Ace", "Ace", "Ace", "Ace"]
 #deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King"]
 
 deck52 = deck *4
@@ -53,7 +53,7 @@ def total(hand):
     """
     totalace = 0
     total = 0
-    if hand.count("Ace") > 1:
+    if hand.count("Ace") >= 1:
         for ace in acechoice:
             totalace = totalace + ace
     for card in hand:
@@ -109,12 +109,14 @@ print(f"\nWelcome {getpass.getuser()}\n")
 time.sleep(2)
 
 #***à faire***
-#bet = input("How much do yo wish to bet?")
+bet = int(input("How much do yo wish to bet?\n"))
+
+wallet = wallet - bet
 
 #************************************
 #**********MAINS DE DEPART***********
 #************************************
-print("Let's look at the hands...\n")
+print("\nLet's look at the hands...\n")
 
 time.sleep(2)
 
@@ -134,16 +136,16 @@ print(f"Your hand:\n{styled(playerhand)}")
 if "Ace" in playerhand:
     newchoice = 0
     while newchoice != 11 and newchoice != 1:
-        #acechoice = int(input("\n---> is Ace worth 1 or 11?\n"))
         newchoice = int(input("\n---> is Ace worth 1 or 11?\n"))
         acechoice.append(newchoice)
-           
+        print(acechoice)
 #***QUID SI DEUX AS???***
     if playerhand.count("Ace") == 2:
         newchoice = 0
         while newchoice != 11 and newchoice != 1:
             newchoice = int(input("\n    ---> is second Ace worth 1 or 11?\n"))
             acechoice.append(newchoice)
+        print(acechoice)
             
 print(f"       => total: {total(playerhand)}")
 
@@ -175,7 +177,7 @@ if total(playerhand) < 21:
         if total(playerhand) == 21:
             print("     BLACKJACK!\n")
         elif total(playerhand) > 21:
-            print("     BUST! You're over 21.\n")
+            print("     BUST! You lose, you're over 21.\n")
         else:
             hit = input("\nAgain? Say 'hit'\n")
 
@@ -190,27 +192,39 @@ time.sleep(2)
 
 print(f"Dealer:\n{styled(dealerhand)}")
 
-print(f"       => total: {total(dealerhand)}\n")
+#print(f"       => total: {total(dealerhand)}\n")
 
+if total(dealerhand) < 17:
+    time.sleep(1)
+    print("Completing dealer's hand until 17...\n")    
 while total(dealerhand) < 17:
-    print("Completing dealer's hand until 17...\n")
+    time.sleep(1)
+    print("...\n")
     drawcard(dealerhand)
     print(styled(dealerhand))
 print(f"       => total: {total(dealerhand)}")
 if total(dealerhand) > 21:
     print("Dealer loses")
 
-
-
-
 #***************************************************
 #*********************GAINS*************************
 #*************************************************** 
 if total(playerhand) == 21 and total(dealerhand) != 21:
+    time.sleep(1)
     print("BLACKJACK! You win")
     wallet = wallet + bet + 1.5*bet
 
 if total(dealerhand) == total(playerhand) == 21:
+    time.sleep(1)
     print("PUSH! Your bet is returned to you")
+    wallet = wallet + bet
+    
+if total(dealerhand) > total(playerhand):
+    time.sleep(1)
+    print("Dealer wins")
+    
+if total(playerhand) > total(dealerhand):
+    time.sleep(1)
+    print("Player wins")
 
-
+print(f"Wallet: {wallet}")
