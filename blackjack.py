@@ -7,20 +7,20 @@ import getpass
 import time
 
 #deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King", "Ace"]
-#deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King"]
-deck = ["Ace","Ace","Ace","Ace"]
+
+deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King", "Ace", "Ace", "Ace", "Ace", "Ace", "Ace", "Ace", "Ace", "Ace"]
 
 deck52 = deck *4
 
-dealerhand = []
-
-playerhand = []
-
 wallet = 100
 
-acechoice = [13]
+# dealer = []
 
-#acechoice2 = 0
+# player = []
+
+# aceplayer = []
+
+# acedealer = []
 
 def givevalue(card):
     """
@@ -40,12 +40,10 @@ def givevalue(card):
         return 10
 
     if card == "Ace":
-        return acechoice[-1]
+        return 0
 
-        
-
-#test de def dans une def
-def total(hand):
+#comment faire avec un seul argument (hand) puis ace[hand]??
+def total(hand, acehand):
     """
     Returns total number of points in a player's hand
 
@@ -56,12 +54,14 @@ def total(hand):
         integer: total amount of points
     """
     total = 0
+    totalace = 0
     for card in hand:
         total = total + givevalue(card)
-    return total
-
-
-    
+    if hand.count("Ace") >= 1:
+        for ace in acehand:
+            totalace = totalace + ace
+    return total + totalace
+  
 
 def styled(hand):
     """
@@ -80,9 +80,9 @@ def styled(hand):
     return " ".join(styled)
 
 
-def drawcard(hand):
+def takecard(hand):
     """
-    Draws a random card from the deck and adds it to the list "playerhand"
+    takes a random card from the deck and adds it to the list "player"
 
     Args:
         player: defines which hand will be updated (player or dealer's)
@@ -91,125 +91,211 @@ def drawcard(hand):
     hand.append(card)
     deck52.remove(card)
 
-#***à finir***
-def getback(bet):
-    """
-    Refunds your bet by adding back bet value to the variable "wallet"
-
-    Args:
-        bet: amount of the bet in dollars
-    """
-    wallet = wallet + bet
-
-
-#****************************
-#************JEU*************
-#****************************
+#*************************************
+#****************JEU******************
+#*************************************
 
 print(f"\nWelcome {getpass.getuser()}\n")
 
 time.sleep(2)
 
-#***à faire***
-#bet = input("How much do yo wish to bet?")
+print("You have 100$.")
 
-#************************************
-#**********MAINS DE DEPART***********
-#************************************
-print("Let's look at the hands...\n")
+replay = "y"
 
-time.sleep(2)
+while wallet > 0:
 
-for required in range(2):
-    #card = random.choice(deck52)
-    #dealerhand.append(card)
-    #deck52.remove(card)
-    drawcard(dealerhand)
+    if replay == "y":
 
-print(f"Dealer:\n< ? >  < {dealerhand[1]} >\n")
+        dealer = []
 
-time.sleep(1)
+        player = []
 
-for required in range(2):
-    #card = random.choice(deck52)
-    #playerhand.append(card)
-    #deck52.remove(card)
-    drawcard(playerhand)
+        aceplayer = []
 
-print(f"Your hand:\n{styled(playerhand)}")
-print("Count:")
-print(playerhand.count("Ace"))
-print(acechoice[0])
+        acedealer = []
 
-if "Ace" in playerhand:
-    newchoice = 0
-    while newchoice != 11 and newchoice != 1:
-        #acechoice = int(input("\n---> is Ace worth 1 or 11?\n"))
-        newchoice = int(input("\n---> is Ace worth 1 or 11?\n"))
-        acechoice.append(newchoice)
-#***QUID SI DEUX AS???***
-    if playerhand.count("Ace") == 2:
-        newchoice = 0
-        while newchoice != 11 and newchoice != 1:
-            newchoice = int(input("\n---> is second Ace worth 1 or 11?\n"))
-            acechoice.append(newchoice) 
+        bet = int(input("\nHow much do yo wish to bet?\n"))
 
-print(f"       => total: {total(playerhand)}")
+        wallet = wallet - bet
 
-if total(playerhand) == 21:
-    print("     BLACKJACK!\n")
+        #************************************
+        #**********MAINS DE DEPART***********
+        #************************************
+        print("\nLet's look at the hands...\n")
 
-#****************************************
-#***********DEMANDE DE CARTES************
-#****************************************
-time.sleep(1)
+        time.sleep(2)
 
-hit = input("\nSay 'hit' if you want another card.\nIf you don't the dealer hand will be revealed.\n")
-    
-while hit.lower() == "hit" and total(playerhand) < 21:
-    card = random.choice(deck52)
-    print("\nHere's your card:")
-    time.sleep(1)
-    drawcard(playerhand)
-    print(styled(playerhand))
-    print(f"      => total: {total(playerhand)}")
-    time.sleep(1)
-    if total(playerhand) == 21:
-        print("     BLACKJACK!\n")
-    elif total(playerhand) > 21:
-        print("     BUST! You're over 21.\n")
+        #voir pour faire fonction takecard avec 2 args où 2ème serait nombre d'itérations
+        for required in range(2):
+            takecard(dealer)
+
+        print(f"Dealer:\n< ? >  < {dealer[-1]} >")
+
+        #*********choix valeur de l'as par dealer*************
+        if dealer[-1] == "Ace":
+                newchoice = 11
+                acedealer.append(newchoice)
+                print(acedealer)
+                print(f"       => total: {newchoice}")
+
+        time.sleep(1)
+
+        for required in range(2):
+            takecard(player)
+
+        print(f"\nYour hand:\n{styled(player)}")
+
+        #***choix valeur de l'as par player***
+        if "Ace" in player:
+            newchoice = 0
+            while newchoice != 11 and newchoice != 1:
+                newchoice = int(input("\n---> is Ace worth 1 or 11?\n"))
+            aceplayer.append(newchoice)
+            print(aceplayer)
+        #***cas où pioche deux as***
+            if player.count("Ace") == 2:
+                newchoice = 0
+                while newchoice != 11 and newchoice != 1:
+                    newchoice = int(input("\n    ---> is second Ace worth 1 or 11?\n"))
+                    aceplayer.append(newchoice)
+                print(aceplayer)
+        
+        time.sleep(1)
+
+        if total(player, aceplayer) == 21:
+            print("       => BLACKJACK")      
+        else:           
+            print(f"       => total: {total(player, aceplayer)}")
+
+
+        #****************************************
+        #*************CHOIX D'ACTION*************
+        #****************************************
+        time.sleep(1)
+
+        if total(player, aceplayer) < 21:
+            
+            action = input("\nWhat do you wish to do now?\n   Say 'hit' if you want another card.\n   Say 'stand' if you want to end your turn. The dealer hand will be revealed.\n   Say 'double' if you want to double your bet. You will take one last card.\n")
+            #hit = input("\nSay 'hit' if you want another card.\nIf you don't the dealer hand will be revealed.\n")
+                
+            #while hit.lower() == "hit" and total(player, aceplayer) < 21:
+            while action.lower() == "hit":
+                card = random.choice(deck52)
+                print("\nHere's your card:")
+                time.sleep(1)
+                takecard(player)
+                print(styled(player))
+                if player[-1] == "Ace":
+                    newchoice = 0
+                    while newchoice != 11 and newchoice != 1:
+                        newchoice = int(input("\n---> is Ace worth 1 or 11?\n"))
+                        aceplayer.append(newchoice)
+                print(f"      => total: {total(player, aceplayer)}")
+                time.sleep(1)
+                #si blackjack ou supérieur à 21: pas de choix à faire
+                if total(player, aceplayer) >= 21:
+                    break
+                else:
+                    #hit = input("\nAgain? Say 'hit'\n")
+                    action = input("\nWhat now? Say 'hit', 'double' or 'stand'.\n")
+                    
+            if action == "double":
+                bet = bet*2
+                card = random.choice(deck52)
+                print("\nDOUBLE DOWN! Here's your card:")
+                time.sleep(1)
+                takecard(player)
+                print(styled(player))
+                if player[-1] == "Ace":
+                    newchoice = 0
+                    while newchoice != 11 and newchoice != 1:
+                        newchoice = int(input("\n---> is Ace worth 1 or 11?\n"))
+                        aceplayer.append(newchoice)
+                print(f"      => total: {total(player, aceplayer)}")
+                time.sleep(1)
+            
+            if action == "stand":
+                time.sleep(1)
+            
+        #***************************************************
+        #******REVEAL ET COMPLETE DE LA MAIN DU DEALER******
+        #***************************************************
+        time.sleep(2)
+
+        print("Your turn ends. Revealing dealer's hand...\n")
+
+        time.sleep(2)
+
+        print(f"Dealer:\n{styled(dealer)}")
+
+        if dealer[0] == "Ace":
+                if (total(dealer, acedealer) + 11) <= 21:
+                    newchoice = 11
+                else:
+                    newchoice = 1
+                acedealer.append(newchoice)
+                print(acedealer)
+
+        if total(dealer, acedealer) < 17:
+            time.sleep(1)
+            print("\nCompleting dealer's hand until 17...")
+            while total(dealer, acedealer) < 17:
+                time.sleep(2)
+                takecard(dealer)
+                print(styled(dealer))
+                print(f"       => total: {total(dealer, acedealer)}\n")
+                if dealer[-1] == "Ace":
+                    #newchoice = 0
+                    if (total(dealer, acedealer) + 11) <= 21:
+                        newchoice = 11
+                    else:
+                        newchoice = 1
+                    acedealer.append(newchoice)
+                time.sleep(2)
+        elif total(dealer, acedealer) == 21:
+            print("       => BLACKJACK\n")
+        else:
+            print(f"       => total: {total(dealer, acedealer)}\n")
+
+                            
+        #***************************************************
+        #****************GAINS DU JOUEUR********************
+        #****************(hors blackjack)*******************
+        #***************************************************
+        time.sleep(1)
+
+        if total(player, aceplayer) > 21:
+            print("Your bet is lost.")
+        else:
+            time.sleep(1)
+            if total(dealer, acedealer) <= 21:
+                if total(dealer, acedealer) > total(player, aceplayer):
+                    print("Your bet is lost.\n")
+                if total(dealer, acedealer) == total(player, aceplayer):
+                    print("PUSH! Your bet is returned to you.\n")
+                    wallet = wallet + bet
+                if total(player, aceplayer) > total(dealer, acedealer) :
+                    print("You win once your bet.\n")
+                    wallet = wallet + bet*2
+            #elif total(dealer, acedealer) > 21:
+            else:
+                print("You win once your bet.\n")
+                wallet = wallet + bet*2
+                    
+        time.sleep(2)
+
+        print(f"You now have {wallet}$.\n")
+
+        time.sleep(2)
+
+        replay = input("Do you still want to play? (y/n)\n")
+
     else:
-        hit = input("\nAgain? Say 'hit'\n") 
+        exit()
 
-#***************************************************
-#******REVEAL ET COMPLETE DE LA MAIN DU DEALER******
-#***************************************************
-time.sleep(2)
-
-print("\nThe hand will end. Revealing dealer's hand...\n")
+print("You're broke. Out!")
 
 time.sleep(2)
 
-print(f"Dealer:\n{styled(dealerhand)}")
-
-print(f"       => total: {total(dealerhand)}\n")
-
-while total(dealerhand) < 17:
-    print("Completing dealer's hand until 17...\n")
-    drawcard(dealerhand)
-    print(styled(dealerhand))
-
-print(f"       => total: {total(dealerhand)}")
-
-
-#***************************************************
-#*********************GAINS*************************
-#*************************************************** 
-if total(playerhand) == 21 and total(dealerhand) != 21:
-    print("BLACKJACK! You win")
-    wallet = wallet + bet + 1.5*bet
-
-if total(dealerhand) == total(playerhand) == 21:
-    print("PUSH! Your bet is returned to you")
-
-
+exit()
